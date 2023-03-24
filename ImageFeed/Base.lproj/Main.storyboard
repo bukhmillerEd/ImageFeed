@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="If2-nZ-qwa">
-                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                                <rect key="frame" x="0.0" y="60" width="393" height="792"/>
                                 <color key="backgroundColor" name="YP Black"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="370" id="2tC-jP-paM" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
@@ -85,10 +85,10 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
-                            <constraint firstItem="If2-nZ-qwa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="9py-NY-TTl"/>
+                            <constraint firstItem="If2-nZ-qwa" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="60" id="9py-NY-TTl"/>
                             <constraint firstAttribute="trailing" secondItem="If2-nZ-qwa" secondAttribute="trailing" id="aJv-vX-5HC"/>
-                            <constraint firstItem="If2-nZ-qwa" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="lDi-Tq-664"/>
-                            <constraint firstItem="If2-nZ-qwa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="pRe-74-Pe3"/>
+                            <constraint firstItem="If2-nZ-qwa" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="lDi-Tq-664"/>
+                            <constraint firstItem="If2-nZ-qwa" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pRe-74-Pe3"/>
                         </constraints>
                     </view>
                     <connections>
