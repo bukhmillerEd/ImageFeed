@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C3E426829DACD2E00E79FE7 /* SF-Pro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C3E426729DACD2E00E79FE7 /* SF-Pro.ttf */; };
+		1C585FAE29DABD04008D125F /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C585FAD29DABD04008D125F /* ProfileViewController.swift */; };
 		1C746D0229CADE8000FAA660 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C746D0129CADE8000FAA660 /* ImagesListCell.swift */; };
+		1CAEFC0A29DC0B4E0068B690 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAEFC0929DC0B4E0068B690 /* SingleImageViewController.swift */; };
 		1CC0508229C365DE008BE8F2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC0508129C365DE008BE8F2 /* AppDelegate.swift */; };
 		1CC0508429C365DE008BE8F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC0508329C365DE008BE8F2 /* SceneDelegate.swift */; };
 		1CC0508629C365DE008BE8F2 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC0508529C365DE008BE8F2 /* ImagesListViewController.swift */; };
@@ -17,7 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C3E426729DACD2E00E79FE7 /* SF-Pro.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro.ttf"; sourceTree = "<group>"; };
+		1C585FAD29DABD04008D125F /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1C746D0129CADE8000FAA660 /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
+		1CAEFC0929DC0B4E0068B690 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		1CC0507E29C365DE008BE8F2 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CC0508129C365DE008BE8F2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CC0508329C365DE008BE8F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -39,6 +45,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C3E426629DACCFF00E79FE7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				1C3E426729DACD2E00E79FE7 /* SF-Pro.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		1C746D0029CADE5A00FAA660 /* ImagesList */ = {
 			isa = PBXGroup;
 			children = (
@@ -67,13 +81,16 @@
 		1CC0508029C365DE008BE8F2 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				1C3E426629DACCFF00E79FE7 /* Fonts */,
 				1C746D0029CADE5A00FAA660 /* ImagesList */,
 				1CC0508129C365DE008BE8F2 /* AppDelegate.swift */,
 				1CC0508329C365DE008BE8F2 /* SceneDelegate.swift */,
 				1CC0508729C365DE008BE8F2 /* Main.storyboard */,
+				1C585FAD29DABD04008D125F /* ProfileViewController.swift */,
 				1CC0508A29C365E0008BE8F2 /* Assets.xcassets */,
 				1CC0508C29C365E0008BE8F2 /* LaunchScreen.storyboard */,
 				1CC0508F29C365E0008BE8F2 /* Info.plist */,
+				1CAEFC0929DC0B4E0068B690 /* SingleImageViewController.swift */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
@@ -137,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CC0508E29C365E0008BE8F2 /* LaunchScreen.storyboard in Resources */,
+				1C3E426829DACD2E00E79FE7 /* SF-Pro.ttf in Resources */,
 				1CC0508B29C365E0008BE8F2 /* Assets.xcassets in Resources */,
 				1CC0508929C365DE008BE8F2 /* Main.storyboard in Resources */,
 			);
@@ -151,7 +169,9 @@
 			files = (
 				1CC0508629C365DE008BE8F2 /* ImagesListViewController.swift in Sources */,
 				1C746D0229CADE8000FAA660 /* ImagesListCell.swift in Sources */,
+				1C585FAE29DABD04008D125F /* ProfileViewController.swift in Sources */,
 				1CC0508229C365DE008BE8F2 /* AppDelegate.swift in Sources */,
+				1CAEFC0A29DC0B4E0068B690 /* SingleImageViewController.swift in Sources */,
 				1CC0508429C365DE008BE8F2 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
