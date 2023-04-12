@@ -219,7 +219,7 @@
         <!--Navigation Controller-->
         <scene sceneID="CVU-Mh-NhY">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="1Th-57-HOQ" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" hidesBarsOnSwipe="YES" id="1Th-57-HOQ" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="RaT-JP-cwI"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="lOC-Hs-Sup">
