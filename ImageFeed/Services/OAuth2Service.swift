@@ -17,12 +17,16 @@ final class OAuth2Service {
     
     static let shared = OAuth2Service()
     
+    private init() {}
+    
+    private var tokenStorage = OAuth2TokenStorage()
+    
     private (set) var authToken: String? {
         get {
-            return OAuth2TokenStorage().token
+            return tokenStorage.token
         }
         set {
-            OAuth2TokenStorage().token = newValue
+            tokenStorage.token = newValue
         }
     }
     
