@@ -10,27 +10,46 @@ import UIKit
 class SplashViewController: UIViewController {
     
     private let ShowAuthenticationScreenSegueIdentifier = "AuthenticationScreen"
+    private let profileService = ProfileService.shared
+    private var alertPresenter: AlertPresenter?
+    private var splashLogo: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "splash_screen_logo")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "YP black")
+        alertPresenter = AlertPresenter(delegat: self)
+        addSubviews()
+    }
+    
+    private func addSubviews() {
+        view.addSubview(splashLogo)
+    }
+    
+    private func applyConstraints() {
+        NSLayoutConstraint.activate([
+            splashLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            splashLogo.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            splashLogo.widthAnchor.constraint(equalToConstant: 77.68),
+            splashLogo.heightAnchor.constraint(equalToConstant: 75)
+        ])
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let token = OAuth2TokenStorage().token {
-            switchToTabBarController()
+        let token = OAuth2TokenStorage().token
+        if let token  {
+            fetchProfile(token: token)
         }  else {
-            performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
-        }
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == ShowAuthenticationScreenSegueIdentifier {
-            guard let navigationController = segue.destination as? UINavigationController,
-                  let vc = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(ShowAuthenticationScreenSegueIdentifier)")}
-            vc.delegate = self
+            let authViewController = AuthViewController()
+            authViewController.delegate = self
+            authViewController.modalPresentationStyle = .fullScreen
+            present(authViewController, animated: true)
         }
     }
     
@@ -44,6 +63,35 @@ class SplashViewController: UIViewController {
             let sb = UIStoryboard(name: "Main", bundle: .main)
             let tabBarVC = sb.instantiateViewController(withIdentifier: "TabBarViewController")
             window.rootViewController = tabBarVC
+        }
+    }
+    
+    private func fetchProfile(token: String) {
+        ProfileService.shared.fetchProfile(token) { [weak self] result  in
+            switch result {
+            case .failure(_):
+                DispatchQueue.main.async {
+                    self?.alertPresenter?.showAlert(
+                        model: AlertModel(title: "Что-то пошло не так(",
+                                          message: "Не удалось войти в систему» и кнопкой. Ошибка при получении данных профиля",
+                                          buttonText: "Ok")
+                    )
+                }
+            case .success(let profileResult):
+                ProfileImageService.shared.fetchProfileImageURL(token: token, username: profileResult.username) { result in
+                    switch result {
+                    case.failure(_):
+                        DispatchQueue.main.async {
+                            self?.alertPresenter?.showAlert(
+                                model: AlertModel(title: "Что-то пошло не так(",
+                                                  message: "Не удалось войти в систему» и кнопкой. Ошибка при получении аватарки",
+                                                  buttonText: "Ok"))
+                        }
+                    case.success(_):
+                        self?.switchToTabBarController()
+                    }
+                }
+            }
         }
     }
     

@@ -19,6 +19,12 @@ protocol AuthViewControllerDelegate: AnyObject {
 final class AuthViewController: UIViewController {
     private let sequeId =  "ShowWebView"
     weak var delegate: AuthViewControllerDelegate?
+    private var alertPresenter: AlertPresenter?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        alertPresenter = AlertPresenter(delegat: self)
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == sequeId,
@@ -36,14 +42,24 @@ extension AuthViewController: WebViewViewControllerDelegate {
                 case .success(let bearerToken):
                     OAuth2TokenStorage().token = bearerToken
                     self?.delegate?.authViewController(self, didAuthenticateWithCode: code)
-                case .failure(let error):
-                    print(error.localizedDescription)
+                    UIBlockingProgressHUD.dismiss()
+                case .failure(_):
+                    UIBlockingProgressHUD.dismiss()
+                    DispatchQueue.main.async {
+                        self?.alertPresenter?.showAlert(
+                            model: AlertModel(
+                                title: "Что-то пошло не так(",
+                                message: "Не удалось войти в систему. Ошибка при получении токена",
+                                buttonText: "Ok")
+                        )
+                    }
                 }
             }
         }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
+        UIBlockingProgressHUD.show()
         vc.dismiss(animated: true)
     }
     
