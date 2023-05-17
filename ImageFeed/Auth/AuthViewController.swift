@@ -36,30 +36,30 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        DispatchQueue.main.async {
-            OAuth2Service.shared.fetchAuthToken(code: code) { [weak self] result in
-                switch result {
-                case .success(let bearerToken):
-                    OAuth2TokenStorage().token = bearerToken
+        UIBlockingProgressHUD.show()
+        OAuth2Service.shared.fetchAuthToken(code: code) { [weak self] result in
+            switch result {
+            case .success(let bearerToken):
+                OAuth2TokenStorage().token = bearerToken
+                DispatchQueue.main.async {
                     self?.delegate?.authViewController(self, didAuthenticateWithCode: code)
                     UIBlockingProgressHUD.dismiss()
-                case .failure(_):
+                }
+            case .failure:
+                DispatchQueue.main.async {
                     UIBlockingProgressHUD.dismiss()
-                    DispatchQueue.main.async {
-                        self?.alertPresenter?.showAlert(
-                            model: AlertModel(
-                                title: "Что-то пошло не так(",
-                                message: "Не удалось войти в систему. Ошибка при получении токена",
-                                buttonText: "Ok")
-                        )
-                    }
+                    self?.alertPresenter?.showAlert(
+                        model: AlertModel(
+                            title: "Что-то пошло не так(",
+                            message: "Не удалось войти в систему. Ошибка при получении токена",
+                            buttonText: "Ok")
+                    )
                 }
             }
         }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        UIBlockingProgressHUD.show()
         vc.dismiss(animated: true)
     }
     

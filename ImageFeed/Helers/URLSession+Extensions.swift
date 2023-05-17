@@ -24,7 +24,9 @@ extension URLSession {
             }
             guard let data = data else { return }
             do {
-                let userResult = try JSONDecoder().decode(T.self, from: data)
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let userResult = try decoder.decode(T.self, from: data)
                 completion(.success(userResult))
                 
             } catch {

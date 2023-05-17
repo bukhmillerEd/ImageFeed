@@ -15,7 +15,7 @@ struct Profile {
     
     init(model: ProfileResult) {
         self.username = model.username
-        self.name = "\(model.firstName) \(model.lastName)"
+        self.name = "\(model.firstName) \(model.lastName ?? "")"
         self.loginName = "@\(model.username)"
         self.bio = model.bio ?? ""
     }

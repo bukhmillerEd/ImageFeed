@@ -199,7 +199,7 @@
         <!--Auth View Controller-->
         <scene sceneID="Bsd-CC-ltl">
             <objects>
-                <viewController id="jsQ-hz-rYl" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AuthViewController" id="jsQ-hz-rYl" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="L5A-v6-CZv">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -343,7 +343,7 @@
         <!--Navigation Controller-->
         <scene sceneID="Are-jk-oOr">
             <objects>
-                <navigationController storyboardIdentifier="AuthViewController" automaticallyAdjustsScrollViewInsets="NO" id="9S0-Bn-7Hi" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9S0-Bn-7Hi" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="ACX-JJ-FUk"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="fuE-EG-qWL">

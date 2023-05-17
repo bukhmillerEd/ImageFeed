@@ -32,11 +32,12 @@ final class ProfileImageService {
             case .success(let userResult):
                 completion(.success(userResult.profileImage.small))
                 self?.avatarURL = userResult.profileImage.small
-                NotificationCenter.default.post(
-                    name: ProfileImageService.DidChangeNotification,
-                    object: self,
-                    userInfo: ["URL": self?.avatarURL ?? ""])
-                
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: ProfileImageService.DidChangeNotification,
+                        object: self,
+                        userInfo: ["URL": self?.avatarURL ?? ""])
+                }
             }
         })
         task?.resume()

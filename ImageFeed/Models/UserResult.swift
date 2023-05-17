@@ -10,10 +10,6 @@ import Foundation
 struct UserResult: Codable {
     var profileImage: ProfileImage
     
-    enum CodingKeys: String, CodingKey {
-        case profileImage = "profile_image"
-    }
-    
     struct ProfileImage: Codable {
         var small: String
     }

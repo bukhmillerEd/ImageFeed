@@ -46,7 +46,9 @@ class SplashViewController: UIViewController {
         if let token  {
             fetchProfile(token: token)
         }  else {
-            let authViewController = AuthViewController()
+            let sb = UIStoryboard(name: "Main", bundle: .main)
+            guard let authViewController = sb.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController
+            else { return }
             authViewController.delegate = self
             authViewController.modalPresentationStyle = .fullScreen
             present(authViewController, animated: true)
@@ -67,10 +69,12 @@ class SplashViewController: UIViewController {
     }
     
     private func fetchProfile(token: String) {
-        ProfileService.shared.fetchProfile(token) { [weak self] result  in
+        UIBlockingProgressHUD.show()
+        ProfileService.shared.fetchProfile(token) { [weak self] result in
             switch result {
-            case .failure(_):
+            case .failure:
                 DispatchQueue.main.async {
+                    UIBlockingProgressHUD.dismiss()
                     self?.alertPresenter?.showAlert(
                         model: AlertModel(title: "Что-то пошло не так(",
                                           message: "Не удалось войти в систему» и кнопкой. Ошибка при получении данных профиля",
@@ -80,14 +84,16 @@ class SplashViewController: UIViewController {
             case .success(let profileResult):
                 ProfileImageService.shared.fetchProfileImageURL(token: token, username: profileResult.username) { result in
                     switch result {
-                    case.failure(_):
+                    case.failure:
                         DispatchQueue.main.async {
+                            UIBlockingProgressHUD.dismiss()
                             self?.alertPresenter?.showAlert(
                                 model: AlertModel(title: "Что-то пошло не так(",
                                                   message: "Не удалось войти в систему» и кнопкой. Ошибка при получении аватарки",
                                                   buttonText: "Ok"))
                         }
-                    case.success(_):
+                    case.success:
+                        UIBlockingProgressHUD.dismiss()
                         self?.switchToTabBarController()
                     }
                 }
