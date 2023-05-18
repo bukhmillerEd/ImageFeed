@@ -93,8 +93,10 @@ class SplashViewController: UIViewController {
                                                   buttonText: "Ok"))
                         }
                     case.success:
-                        UIBlockingProgressHUD.dismiss()
-                        self?.switchToTabBarController()
+                        DispatchQueue.main.async {
+                            UIBlockingProgressHUD.dismiss()
+                            self?.switchToTabBarController()
+                        }
                     }
                 }
             }
