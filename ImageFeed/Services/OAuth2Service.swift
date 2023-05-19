@@ -9,17 +9,11 @@ import Foundation
 
 final class OAuth2Service {
     
-    enum NetworkError: Error {
-        case httpStatusCode(Int)
-        case urlRequestError(Error)
-        case urlSessionError
-    }
-    
     static let shared = OAuth2Service()
     
-    private init() {}
-    
     private var tokenStorage = OAuth2TokenStorage()
+    private var lastCode: String?
+    private var task: URLSessionTask?
     
     private (set) var authToken: String? {
         get {
@@ -30,31 +24,29 @@ final class OAuth2Service {
         }
     }
     
+    private init() {}
+    
     func fetchAuthToken(
         code: String,
-        complition: @escaping (Result<String, Error>) -> Void
+        completion: @escaping (Result<String, Error>) -> Void
     ) {
+        if lastCode == code { return }
+        task?.cancel()
+        lastCode = code
+        
         let request = authTokenRequest(code: code)
         
-        let task = URLSession.shared.dataTask(with: request) {data, response, error in
-            if let error = error {
-                complition(.failure(error))
-                return
+        task = URLSession.shared.objectTask(for: request, completion: { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            switch result {
+            case .failure(let error):
+                self?.lastCode = nil
+                completion(.failure(error))
+            case .success(let body):
+                completion(.success(body.accessToken))
+                self?.task = nil
             }
-            if let response = response as? HTTPURLResponse,
-               response.statusCode < 200 || response.statusCode >= 300 {
-                complition(.failure(NetworkError.httpStatusCode(response.statusCode)))
-                return
-            }
-            guard let data = data else { return }
-            do {
-                let body = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                complition(.success(body.accessToken))
-            } catch {
-                complition(.failure(error))
-            }
-        }
-        task.resume()
+        })
+        task?.resume()
     }
     
     private func authTokenRequest(code: String) -> URLRequest {
@@ -67,7 +59,8 @@ final class OAuth2Service {
             + "&&grant_type=authorization_code",
             httpMethod: "POST",
             baseURL: URL(string: "https://unsplash.com")!
-        ) }
+        )
+    }
     
     
 }
