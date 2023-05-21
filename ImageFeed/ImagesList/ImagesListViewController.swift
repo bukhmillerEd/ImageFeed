@@ -5,8 +5,10 @@ class ImagesListViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
    
-    private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let photos: [String] = Array(0..<20).map{ "\($0)" }
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    private let imagesListService = ImagesListService()
+    private var imageListServiceObserver: NSObjectProtocol?
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -18,15 +20,39 @@ class ImagesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        addObserver()
+    }
+    
+    func tableView(
+      _ tableView: UITableView,
+      willDisplay cell: UITableViewCell,
+      forRowAt indexPath: IndexPath
+    ) {
+        if indexPath.row + 1 == photos.count {
+            if let token = OAuth2TokenStorage().token {
+                imagesListService.fetchPhotosNextPage(token)
+            }
+        }
     }
     
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        let photoNmae = photosName[indexPath.row]
+        let photoNmae = photos[indexPath.row]
         guard let image = UIImage(named: photoNmae) else { return }
         cell.photo.image = image
         cell.dateLabel.text = dateFormatter.string(from: Date())
         let namePhotoButton = indexPath.row % 2 == 0 ? "Favorites Active" : "Favorites No Active"
         cell.favoritesButton.imageView?.image = UIImage(named: namePhotoButton)
+    }
+    
+    private func addObserver() {
+        imageListServiceObserver = NotificationCenter.default.addObserver(
+            forName: ImagesListService.DidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            //
+        }
     }
 
 }
@@ -37,7 +63,7 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: photosName[indexPath.row]) else {
+        guard let image = UIImage(named: photos[indexPath.row]) else {
             return 0
         }
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
@@ -52,7 +78,7 @@ extension ImagesListViewController: UITableViewDelegate {
         if segue.identifier == showSingleImageSegueIdentifier {
             guard let vc = segue.destination as? SingleImageViewController,
                   let indexPath = sender as? IndexPath else { return }
-            let image = UIImage(named: photosName[indexPath.row])
+            let image = UIImage(named: photos[indexPath.row])
             vc.image = image
         } else {
             super.prepare(for: segue, sender: sender)
@@ -62,7 +88,7 @@ extension ImagesListViewController: UITableViewDelegate {
 
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        return photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
