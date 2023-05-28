@@ -24,14 +24,15 @@ final class ImagesListService {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
-            guard let self else { return }
-            switch result {
-            case .failure(let error):
-                print(error.localizedDescription)
-                self.task = nil
-            case .success(let photosResult):
-                self.task = nil
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                guard let self else { return }
+                switch result {
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    self.task = nil
+                case .success(let photosResult):
+                    self.task = nil
+                    self.lastLoadedPage = nextPage
                     for photoResult in photosResult {
                         self.photos.append(Photo(photoResult: photoResult))
                     }
@@ -40,9 +41,35 @@ final class ImagesListService {
                         object: self,
                         userInfo: ["photos": self.photos])
                 }
+                
             }
+            
         }
         task?.resume()
         task = nil
     }
+    
+    func changeLike(token: String,
+                    photoId: String,
+                    isLike: Bool,
+                    _ completion: @escaping (Result<LikePhotoResult, Error>) -> Void) {
+        var request: URLRequest
+        if isLike {
+            request = URLRequest(url: DefaultBaseURL).likeRequest(photoId: photoId)
+        } else {
+            request = URLRequest(url: DefaultBaseURL).unlikeRequest(photoId: photoId)
+        }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.objectTask(for: request) { (result: Result<LikePhotoResult, Error>) in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let likePhotoResult):
+                completion(.success(likePhotoResult))
+            }
+        }
+        task.resume()
+    }
+    
 }

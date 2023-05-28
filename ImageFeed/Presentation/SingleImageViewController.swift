@@ -6,14 +6,13 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
-    var image: UIImage! {
-        didSet {
-            guard isViewLoaded else { return }
-            imageView.image = image
-        }
-    }
+
+    private var alertPresenter: AlertPresenter?
+    private var image: UIImage?
+    var imageUrl: String = String()
     
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var imageView: UIImageView!
@@ -22,9 +21,7 @@ final class SingleImageViewController: UIViewController {
         super.viewDidLoad()
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
-        imageView.image = image
-        rescaleAndCenterImageInScrollView(image: image)
-        
+        fetchImage()
     }
     
     @IBAction private func backBattonWasPressed(_ sender: Any) {
@@ -32,7 +29,8 @@ final class SingleImageViewController: UIViewController {
     }
     
     @IBAction private func didTapShareButton(_ sender: Any) {
-        let activityView = UIActivityViewController(activityItems: [image ?? UIImage()], applicationActivities: [])
+        guard let image = image else { return }
+        let activityView = UIActivityViewController(activityItems: [image], applicationActivities: [])
         present(activityView, animated: true)
     }
     
@@ -51,6 +49,23 @@ final class SingleImageViewController: UIViewController {
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
+    }
+    
+    private func fetchImage() {
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(with: URL(string: imageUrl)) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self = self else { return }
+            switch result {
+            case .success(let imageResult):
+                self.image = imageResult.image
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+            case .failure(_):
+                self.alertPresenter?.showAlert(model: AlertModel(title: "Что то пошло не так :(",
+                                                                 message: "Не удалось загрузить полноразмерную фото",
+                                                                 buttonText: "ОК"))
+            }
+        }
     }
 }
 

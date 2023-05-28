@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import WebKit
 
 final class ProfileViewController: UIViewController {
     
@@ -126,7 +127,29 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func logoutButtonWasPressed(_ sender: Any) {
-        print("logoutButtonWasPressed")
+        clean()
+        OAuth2TokenStorage().token = nil
+        
+        // Получим экземпляр Window приложения
+        guard let window = UIApplication.shared.windows.first else {
+            fatalError("Invalid configuration")
+        }
+        // Создаем экземпляр нужного контроллера из сториборда
+        //let sb = UIStoryboard(name: "Main", bundle: .main)
+        let vc = SplashViewController()
+        window.rootViewController = vc
+    }
+    
+    private func clean() {
+       // Очищаем все куки из хранилища.
+       HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+       // Запрашиваем все данные из локального хранилища.
+       WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+          // Массив полученных записей удаляем из хранилища.
+          records.forEach { record in
+             WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+          }
+       }
     }
     
 }

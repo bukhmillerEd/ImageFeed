@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C3BA0752A1E6371008CD7B5 /* LikePhotoResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3BA0742A1E6371008CD7B5 /* LikePhotoResult.swift */; };
 		1C3E426829DACD2E00E79FE7 /* SF-Pro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C3E426729DACD2E00E79FE7 /* SF-Pro.ttf */; };
 		1C3F289C2A123E3C00353A7C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1C3F289B2A123E3C00353A7C /* Kingfisher */; };
 		1C3F289F2A126D5D00353A7C /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 1C3F289E2A126D5D00353A7C /* SwiftKeychainWrapper */; };
@@ -45,6 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C3BA0742A1E6371008CD7B5 /* LikePhotoResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikePhotoResult.swift; sourceTree = "<group>"; };
 		1C3E426729DACD2E00E79FE7 /* SF-Pro.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro.ttf"; sourceTree = "<group>"; };
 		1C3F28A02A127B0400353A7C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		1C4234462A07983900A73021 /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				1C54100E2A0E5EB20082E303 /* AlertModel.swift */,
 				1CCE12AB2A19166200A8ED61 /* Photo.swift */,
 				1CCE12AD2A191FFE00A8ED61 /* PhotoResult.swift */,
+				1C3BA0742A1E6371008CD7B5 /* LikePhotoResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CC92E6D29F297E7007D6ADE /* URLRequest+Extensions.swift in Sources */,
+				1C3BA0752A1E6371008CD7B5 /* LikePhotoResult.swift in Sources */,
 				1C4234492A079F0000A73021 /* ProfileService.swift in Sources */,
 				1CC92E6A29F28D1F007D6ADE /* OAuth2TokenStorage.swift in Sources */,
 				1CCE12AC2A19166200A8ED61 /* Photo.swift in Sources */,
