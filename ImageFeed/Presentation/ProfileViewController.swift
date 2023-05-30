@@ -127,15 +127,24 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func logoutButtonWasPressed(_ sender: Any) {
+        let question = UIAlertController(title: "Пока, пока!",
+                                         message: "Уверены что хотите выйти?",
+                                         preferredStyle: .alert)
+        let yes = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+            self?.removeUserData()
+        }
+        let no = UIAlertAction(title: "Нет", style: .default)
+        question.addAction(yes)
+        question.addAction(no)
+        self.present(question, animated: true)
+    }
+    
+    private func removeUserData() {
         clean()
-        OAuth2TokenStorage().token = nil
-        
-        // Получим экземпляр Window приложения
+        OAuth2TokenStorage.shared.token = nil
         guard let window = UIApplication.shared.windows.first else {
             fatalError("Invalid configuration")
         }
-        // Создаем экземпляр нужного контроллера из сториборда
-        //let sb = UIStoryboard(name: "Main", bundle: .main)
         let vc = SplashViewController()
         window.rootViewController = vc
     }

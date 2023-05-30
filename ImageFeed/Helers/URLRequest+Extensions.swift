@@ -30,18 +30,13 @@ extension URLRequest {
           + "&&per_page=\(perPage)", httpMethod: "GET"
         )
     }
-    func likeRequest(photoId: String) -> URLRequest {
+    func likeRequest(photoId: String, isLike: Bool) -> URLRequest {
         URLRequest.makeHTTPRequest(
           path: "/photos/\(photoId)/like",
-          httpMethod: "POST"
+          httpMethod: isLike ? "POST" : "DELETE"
         )
     }
-    func unlikeRequest(photoId: String) -> URLRequest {
-        URLRequest.makeHTTPRequest(
-          path: "/photos/\(photoId)/like",
-          httpMethod: "DELETE"
-        )
-    }
+ 
     func authTokenRequest(code: String) -> URLRequest {
         URLRequest.makeHTTPRequest(
             path: "/oauth/token"

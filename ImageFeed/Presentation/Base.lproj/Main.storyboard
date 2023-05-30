@@ -214,7 +214,7 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6JB-Hr-NI8">
-                                <rect key="frame" x="16" y="659" width="361" height="48"/>
+                                <rect key="frame" x="16" y="680" width="361" height="48"/>
                                 <color key="backgroundColor" name="YP White (iOS)"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="HBi-97-Vaa"/>
@@ -252,7 +252,7 @@
                             <constraint firstItem="vZs-aq-dBT" firstAttribute="centerY" secondItem="Qym-N8-xQD" secondAttribute="centerY" id="4EZ-qy-5RE"/>
                             <constraint firstItem="Qym-N8-xQD" firstAttribute="trailing" secondItem="6JB-Hr-NI8" secondAttribute="trailing" constant="16" id="4vO-Ef-pcQ"/>
                             <constraint firstItem="vZs-aq-dBT" firstAttribute="centerX" secondItem="Qym-N8-xQD" secondAttribute="centerX" id="IdY-TK-ovc"/>
-                            <constraint firstItem="Qym-N8-xQD" firstAttribute="bottom" secondItem="6JB-Hr-NI8" secondAttribute="bottom" constant="111" id="lgu-XE-PMf"/>
+                            <constraint firstItem="Qym-N8-xQD" firstAttribute="bottom" secondItem="6JB-Hr-NI8" secondAttribute="bottom" constant="90" id="lgu-XE-PMf"/>
                             <constraint firstItem="6JB-Hr-NI8" firstAttribute="leading" secondItem="Qym-N8-xQD" secondAttribute="leading" constant="16" id="sU0-PW-rg6"/>
                         </constraints>
                     </view>

@@ -8,12 +8,12 @@
 import Foundation
 
 struct Photo {
-    var id: String
-    var size: CGSize
-    var createdAt: Date?
-    var welcomeDescription: String
-    var thumbImageURL: String
-    var largeImageURL: String
+    let id: String
+    let size: CGSize
+    let createdAt: Date?
+    let welcomeDescription: String
+    let thumbImageURL: String
+    let largeImageURL: String
     var isLiked: Bool
     
     init(photoResult: PhotoResult) {

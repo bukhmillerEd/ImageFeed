@@ -16,16 +16,12 @@ final class ImagesListCell: UITableViewCell {
         photo.kf.cancelDownloadTask()
     }
     
-    @IBAction func likeButtonClicked(_ sender: UIButton) {
+    @IBAction private func likeButtonClicked(_ sender: UIButton) {
         delegate?.imageListCellDidTapLike(self)
     }
     
     func setIsLiked(isLike: Bool) {
-        if isLike {
-            favoritesButton.setImage(UIImage(named: "Favorites Active"), for: .normal)
-        } else {
-            favoritesButton.setImage(UIImage(named: "Favorites No Active"), for: .normal)
-        }
-            
+        let image = UIImage(named: isLike ? "Favorites Active" : "Favorites No Active")
+        favoritesButton.setImage(image, for: .normal)
     }
 }

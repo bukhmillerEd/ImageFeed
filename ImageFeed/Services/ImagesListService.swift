@@ -54,11 +54,7 @@ final class ImagesListService {
                     isLike: Bool,
                     _ completion: @escaping (Result<LikePhotoResult, Error>) -> Void) {
         var request: URLRequest
-        if isLike {
-            request = URLRequest(url: DefaultBaseURL).likeRequest(photoId: photoId)
-        } else {
-            request = URLRequest(url: DefaultBaseURL).unlikeRequest(photoId: photoId)
-        }
+        request = URLRequest(url: DefaultBaseURL).likeRequest(photoId: photoId, isLike: isLike)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         let task = URLSession.shared.objectTask(for: request) { (result: Result<LikePhotoResult, Error>) in

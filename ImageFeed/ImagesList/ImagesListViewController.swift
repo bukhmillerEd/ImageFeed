@@ -28,7 +28,7 @@ class ImagesListViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         addObserver()
         alertPresenter = AlertPresenter(delegat: self)
-        if let token = OAuth2TokenStorage().token {
+        if let token = OAuth2TokenStorage.shared.token {
             imagesListService.fetchPhotosNextPage(token)
         }
     }
@@ -39,7 +39,7 @@ class ImagesListViewController: UIViewController {
       forRowAt indexPath: IndexPath
     ) {
         if indexPath.row + 1 == photos.count {
-            if let token = OAuth2TokenStorage().token {
+            if let token = OAuth2TokenStorage.shared.token {
                 imagesListService.fetchPhotosNextPage(token)
             }
         }
@@ -133,15 +133,15 @@ extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let photo = photos[indexPath.row]
-        guard let token = OAuth2TokenStorage().token else { return }
+        guard let token = OAuth2TokenStorage.shared.token else { return }
         UIBlockingProgressHUD.show()
-        imagesListService.changeLike(token: token, photoId: photo.id, isLike: !photo.isLiked) { result in
+        imagesListService.changeLike(token: token, photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 switch result {
                 case .success(_):
                     UIBlockingProgressHUD.dismiss()
-                    self.photos[indexPath.row].isLiked = !self.photos[indexPath.row].isLiked
+                    self.photos[indexPath.row].isLiked.toggle()
                     cell.setIsLiked(isLike: photo.isLiked)
                     self.tableView.reloadRows(at: [indexPath], with: .automatic)
                 case .failure(_):

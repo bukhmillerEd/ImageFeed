@@ -40,7 +40,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         OAuth2Service.shared.fetchAuthToken(code: code) { [weak self] result in
             switch result {
             case .success(let bearerToken):
-                OAuth2TokenStorage().token = bearerToken
+                OAuth2TokenStorage.shared.token = bearerToken
                 DispatchQueue.main.async {
                     self?.delegate?.authViewController(self, didAuthenticateWithCode: code)
                     UIBlockingProgressHUD.dismiss()
