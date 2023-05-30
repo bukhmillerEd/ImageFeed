@@ -12,6 +12,7 @@ final class ImagesListService {
     private (set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
+    private let token = OAuth2TokenStorage.shared.token
     
     static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
@@ -49,10 +50,10 @@ final class ImagesListService {
         task = nil
     }
     
-    func changeLike(token: String,
-                    photoId: String,
+    func changeLike(photoId: String,
                     isLike: Bool,
                     _ completion: @escaping (Result<LikePhotoResult, Error>) -> Void) {
+        guard let token else { return }
         var request: URLRequest
         request = URLRequest(url: DefaultBaseURL).likeRequest(photoId: photoId, isLike: isLike)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

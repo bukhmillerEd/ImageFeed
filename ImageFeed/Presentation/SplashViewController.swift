@@ -70,7 +70,7 @@ class SplashViewController: UIViewController {
     
     private func fetchProfile(token: String) {
         UIBlockingProgressHUD.show()
-        ProfileService.shared.fetchProfile(token) { [weak self] result in
+        ProfileService.shared.fetchProfile() { [weak self] result in
             switch result {
             case .failure:
                 DispatchQueue.main.async {
@@ -82,7 +82,7 @@ class SplashViewController: UIViewController {
                     )
                 }
             case .success(let profileResult):
-                ProfileImageService.shared.fetchProfileImageURL(token: token, username: profileResult.username) { result in
+                ProfileImageService.shared.fetchProfileImageURL(username: profileResult.username) { result in
                     switch result {
                     case.failure:
                         DispatchQueue.main.async {

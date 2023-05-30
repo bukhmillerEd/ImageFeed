@@ -10,12 +10,14 @@ import Foundation
 final class ProfileService {
     static let shared = ProfileService()
     private(set) var profile: Profile? 
+    private let token = OAuth2TokenStorage.shared.token
     
     private var task: URLSessionTask?
     
     private init(){}
     
-    func fetchProfile(_ token: String, completion: @escaping(Result<ProfileResult, Error>) -> Void) {
+    func fetchProfile(completion: @escaping(Result<ProfileResult, Error>) -> Void) {
+        guard let token else { return }
         task?.cancel()
         var request = URLRequest.makeHTTPRequest(path: "/me", httpMethod: "GET")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
