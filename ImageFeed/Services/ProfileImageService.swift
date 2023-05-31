@@ -15,11 +15,14 @@ final class ProfileImageService {
     
     private var task: URLSessionTask?
     
+    private let token = OAuth2TokenStorage.shared.token
+    
     static let DidChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
     private init() {}
     
-    func fetchProfileImageURL(token: String, username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
+        guard let token else { return }
         task?.cancel()
         var request = URLRequest(url: DefaultBaseURL).profileImageURLRequest(username: username)
         

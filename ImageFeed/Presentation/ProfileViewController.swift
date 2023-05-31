@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import WebKit
 
 final class ProfileViewController: UIViewController {
     
@@ -126,7 +127,38 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func logoutButtonWasPressed(_ sender: Any) {
-        print("logoutButtonWasPressed")
+        let question = UIAlertController(title: "Пока, пока!",
+                                         message: "Уверены что хотите выйти?",
+                                         preferredStyle: .alert)
+        let yes = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+            self?.removeUserData()
+        }
+        let no = UIAlertAction(title: "Нет", style: .default)
+        question.addAction(yes)
+        question.addAction(no)
+        self.present(question, animated: true)
+    }
+    
+    private func removeUserData() {
+        clean()
+        OAuth2TokenStorage.shared.token = nil
+        guard let window = UIApplication.shared.windows.first else {
+            fatalError("Invalid configuration")
+        }
+        let vc = SplashViewController()
+        window.rootViewController = vc
+    }
+    
+    private func clean() {
+       // Очищаем все куки из хранилища.
+       HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+       // Запрашиваем все данные из локального хранилища.
+       WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+          // Массив полученных записей удаляем из хранилища.
+          records.forEach { record in
+             WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+          }
+       }
     }
     
 }
