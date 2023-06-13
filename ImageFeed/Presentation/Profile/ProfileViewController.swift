@@ -7,9 +7,16 @@
 
 import UIKit
 import Kingfisher
-import WebKit
 
-final class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfilePresenterProtocol? {get set}
+    
+    func updateProfileDetails(with profile: Profile)
+    func updateAvatar(with url: URL)
+    func clearWindowStack()
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     
     private let avatarImage: UIImageView = {
         let avatarImage = UIImageView()
@@ -23,6 +30,7 @@ final class ProfileViewController: UIViewController {
         logoutButton.setImage(UIImage(named: "ipad.and.arrow.forward"), for: .normal)
         logoutButton.addTarget(nil, action: #selector(logoutButtonWasPressed), for: .touchUpInside)
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
+        logoutButton.accessibilityIdentifier = "logout button"
         return logoutButton
     }()
     
@@ -53,8 +61,7 @@ final class ProfileViewController: UIViewController {
         return descriptionLabel
     }()
     
-    private let profileService = ProfileService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?
+    var presenter: ProfilePresenterProtocol? = ProfileViewPresenter()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,32 +69,18 @@ final class ProfileViewController: UIViewController {
         
         addSubview()
         applyConstraints()
-        updateProfileDetails(profile: profileService.profile)
-        addObserver()
+
+        configure(presenter)
+        presenter?.viewDidLoad()
     }
     
-    private func updateProfileDetails(profile: Profile?) {
-        nameLabel.text = profile?.name
-        usernameLabel.text = profile?.username
-        descriptionLabel.text = profile?.bio
+    func updateProfileDetails(with profile: Profile) {
+        nameLabel.text = profile.name
+        usernameLabel.text = profile.username
+        descriptionLabel.text = profile.bio
     }
     
-    private func addObserver() {
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.DidChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAvatar()
-        }
-        updateAvatar()
-    }
-    
-    private func updateAvatar() {
-        guard let profileImageURL = ProfileImageService.shared.avatarURL,
-              let url = URL(string: profileImageURL)
-        else { return }
+    func updateAvatar(with url: URL) {
         let processor = RoundCornerImageProcessor(cornerRadius: 61)
         avatarImage.kf.setImage(with: url, options: [.processor(processor)])
     }
@@ -126,22 +119,7 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    @objc private func logoutButtonWasPressed(_ sender: Any) {
-        let question = UIAlertController(title: "Пока, пока!",
-                                         message: "Уверены что хотите выйти?",
-                                         preferredStyle: .alert)
-        let yes = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
-            self?.removeUserData()
-        }
-        let no = UIAlertAction(title: "Нет", style: .default)
-        question.addAction(yes)
-        question.addAction(no)
-        self.present(question, animated: true)
-    }
-    
-    private func removeUserData() {
-        clean()
-        OAuth2TokenStorage.shared.token = nil
+    func clearWindowStack() {
         guard let window = UIApplication.shared.windows.first else {
             fatalError("Invalid configuration")
         }
@@ -149,16 +127,22 @@ final class ProfileViewController: UIViewController {
         window.rootViewController = vc
     }
     
-    private func clean() {
-       // Очищаем все куки из хранилища.
-       HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-       // Запрашиваем все данные из локального хранилища.
-       WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-          // Массив полученных записей удаляем из хранилища.
-          records.forEach { record in
-             WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-          }
-       }
+    @objc private func logoutButtonWasPressed(_ sender: Any) {
+        let question = UIAlertController(title: "Пока, пока!",
+                                         message: "Уверены что хотите выйти?",
+                                         preferredStyle: .alert)
+        let yes = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+            self?.presenter?.removeUserData()
+        }
+        let no = UIAlertAction(title: "Нет", style: .default)
+        question.addAction(yes)
+        question.addAction(no)
+        self.present(question, animated: true)
+    }
+    
+    func configure(_ presenter: ProfilePresenterProtocol?) {
+        self.presenter = presenter
+        self.presenter?.view = self
     }
     
 }

@@ -16,6 +16,8 @@ struct Photo {
     let largeImageURL: String
     var isLiked: Bool
     
+    private let imagesListService = ImagesListService()
+    
     init(photoResult: PhotoResult) {
         id = photoResult.id
         size = CGSize(width: photoResult.width, height: photoResult.height)

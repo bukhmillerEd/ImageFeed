@@ -7,15 +7,25 @@ protocol ImagesListCellDelegate: AnyObject {
     func imageListCellDidTapLike(_ cell: ImagesListCell)
 }
 
-class ImagesListViewController: UIViewController {
+protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImageListPresenterProtocol? {get}
+    func updateTableView(date photos: [Photo])
+}
 
-    @IBOutlet private weak var tableView: UITableView!
+class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
+
+    @IBOutlet private weak var tableView: UITableView! {
+        didSet {
+            tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        }
+    }
    
-    private var photos: [Photo] = []
+    private(set) var photos: [Photo] = []
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    private let imagesListService = ImagesListService()
-    private var imageListServiceObserver: NSObjectProtocol?
     private var alertPresenter: AlertPresenter?
+    private let imagesListService = ImagesListService()
+    
+    var presenter: ImageListPresenterProtocol?
     
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -25,12 +35,12 @@ class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-        addObserver()
         alertPresenter = AlertPresenter(delegat: self)
-        if let token = OAuth2TokenStorage.shared.token {
-            imagesListService.fetchPhotosNextPage(token)
+      
+        if presenter == nil {
+            presenter = ImageListPresenter(dataModelImageList: ImageListModel(), view: self)
         }
+        presenter?.viewDidLoad()
     }
     
     func tableView(
@@ -39,40 +49,34 @@ class ImagesListViewController: UIViewController {
       forRowAt indexPath: IndexPath
     ) {
         if indexPath.row + 1 == photos.count {
-            if let token = OAuth2TokenStorage.shared.token {
-                imagesListService.fetchPhotosNextPage(token)
-            }
+            presenter?.fetchPhotos()
         }
+    }
+    
+    func updateTableView(date photos: [Photo]) {
+        let oldCount = self.photos.count
+        self.photos = photos
+        let newCount = self.photos.count
+        UIBlockingProgressHUD.dismiss()
+        updateTableViewAnimated(oldCount, newCount)
     }
     
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        cell.delegate = self
-        cell.dateLabel.text = photos[indexPath.row].createdAt == nil ? "" : dateFormatter.string(from: photos[indexPath.row].createdAt!)
+        
+        let date = photos[indexPath.row].createdAt == nil ? "" : dateFormatter.string(from: photos[indexPath.row].createdAt!)
         let namePhotoButton = photos[indexPath.row].isLiked ? "Favorites Active" : "Favorites No Active"
-        cell.favoritesButton.setImage(UIImage(named: namePhotoButton), for: .normal)
-        let url = URL(string: photos[indexPath.row].thumbImageURL)
-        cell.photo.kf.indicatorType = .activity
-        cell.photo.kf.setImage(with: url, placeholder: UIImage(named: "stub")) { [weak self] _ in
+        let photoName = photos[indexPath.row].thumbImageURL
+        let modelCell = ImagesListCellModel(photoName: photoName,
+                                            date: date,
+                                            favoritesName: namePhotoButton) { [weak self] in
             guard let self else { return }
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
+        cell.delegate = self
+        cell.configureCell(with: modelCell)
     }
-    
-    private func addObserver() {
-        imageListServiceObserver = NotificationCenter.default.addObserver(
-            forName: ImagesListService.DidChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateTableViewAnimated();
-        }
-    }
-    
-    func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imagesListService.photos.count
-        photos = imagesListService.photos
+
+    private func updateTableViewAnimated(_ oldCount: Int, _ newCount: Int) {
         if oldCount != newCount {
             tableView.performBatchUpdates {
                 let indexPaths = (oldCount..<newCount).map { i in
@@ -129,6 +133,8 @@ extension ImagesListViewController: UITableViewDataSource {
 }
 
 extension ImagesListViewController: ImagesListCellDelegate {
+    
+    // TODO: Закопался, потерял много времени, и не смог придумать как вынести эту функцию в презентер и там еще обновить ячейку. Так как сделано изначально через NotificationCenter
     
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }

@@ -16,7 +16,8 @@ final class ImagesListService {
     
     static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
-    func fetchPhotosNextPage(_ token: String) {
+    func fetchPhotosNextPage() {
+        guard let token = token else { return }
         if task != nil {
             return
         }
