@@ -19,8 +19,11 @@ final class ImageListModel: ImageListModelProtocol {
     private var imageListServiceObserver: NSObjectProtocol?
     static let LoadedPhotosNotification = Notification.Name(rawValue: "LoadedPhotos")
     
-    func fetchData() {
+    init() {
         addObserver()
+    }
+    
+    func fetchData() {
         imagesListService.fetchPhotosNextPage()
     }
     

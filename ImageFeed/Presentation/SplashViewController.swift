@@ -41,9 +41,7 @@ class SplashViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        let token = OAuth2TokenStorage.shared.token
-        if let token  {
+        if OAuth2TokenStorage.shared.token != nil  {
             fetchProfile()
         }  else {
             let sb = UIStoryboard(name: "Main", bundle: .main)
@@ -69,7 +67,6 @@ class SplashViewController: UIViewController {
     }
     
     private func fetchProfile() {
-        //guard let token = OAuth2TokenStorage.shared.token else { return }
         UIBlockingProgressHUD.show()
         ProfileService.shared.fetchProfile() { [weak self] result in
             switch result {

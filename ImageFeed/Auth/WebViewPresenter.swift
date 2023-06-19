@@ -20,7 +20,7 @@ final class WebViewPresenter: WebViewPresenterProtocol {
     var authHelper: AuthHelperProtocol
     
     init(authHelper: AuthHelperProtocol) {
-           self.authHelper = authHelper
+        self.authHelper = authHelper
     }
     
     func viewDidLoad() {

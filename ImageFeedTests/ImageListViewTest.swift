@@ -21,8 +21,6 @@ let mockphotos: [Photo] = Array(0..<20).map{
                                                                 small: "",
                                                                 thumb: ""))
     )
-    
-    
 }
 
 final class ImageListPresenterSpy: ImageListPresenterProtocol {
@@ -44,12 +42,10 @@ final class ImageListModelSpy: ImageListModelProtocol {
     func fetchData() {
         self.photos = mockphotos
     }
-    
-    
 }
 
 final class ImageListViewTest: XCTestCase {
-
+    
     func testViewControllerCallsViewDidLoad() {
         let sb = UIStoryboard(name: "Main", bundle: nil)
         let vc = sb.instantiateViewController(withIdentifier: "ImageListVC") as! ImagesListViewController
@@ -57,7 +53,7 @@ final class ImageListViewTest: XCTestCase {
         var presenter = ImageListPresenterSpy()
         
         vc.presenter = presenter
-       
+        
         vc.viewDidLoad()
         
         XCTAssertTrue(presenter.viewDidLoadDidCalled)
@@ -71,12 +67,9 @@ final class ImageListViewTest: XCTestCase {
         var presenter = ImageListPresenter(dataModelImageList: modelSpy, view: vc)
         
         vc.presenter = presenter
-       
         vc.viewDidLoad()
         
         XCTAssertEqual(modelSpy.photos.count, mockphotos.count)
-        
     }
-    
     
 }

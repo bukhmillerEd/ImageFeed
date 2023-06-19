@@ -43,12 +43,9 @@ final class ImagesListService {
                         object: self,
                         userInfo: ["photos": self.photos])
                 }
-                
             }
-            
         }
         task?.resume()
-        task = nil
     }
     
     func changeLike(photoId: String,

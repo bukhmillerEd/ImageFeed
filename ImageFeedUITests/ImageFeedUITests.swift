@@ -14,12 +14,11 @@ class Image_FeedUITests: XCTestCase {
     
     private let login = ""
     private let password = ""
-    private let nameLastname = ""
+    private let nameLastname = " "
     private let username = ""
     
     override func setUpWithError() throws {
         continueAfterFailure = false
-        
         app.launch()
     }
     
@@ -37,6 +36,8 @@ class Image_FeedUITests: XCTestCase {
         loginTextField.typeText(login)
         webView.swipeUp()
         
+        webView.tap()
+        
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         
@@ -44,7 +45,11 @@ class Image_FeedUITests: XCTestCase {
         passwordTextField.typeText(password)
         webView.swipeUp()
         
+        webView.tap()
+        
         webView.buttons["Login"].tap()
+        
+        sleep(5)
         
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
@@ -60,23 +65,22 @@ class Image_FeedUITests: XCTestCase {
         }
         
         let tablesQuery = app.tables
+    
+        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
         
-        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        sleep(3)
-        cell.swipeUp()
+        let likeButton = cellToLike.buttons["likeBtn"]
+        likeButton.tap()
         
         sleep(5)
         
-        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        let likeBtn = cellToLike.buttons["likeBtn"]
+        likeBtn.tap()
         
-        cellToLike.buttons["likeBtn"].tap()
-        cellToLike.buttons["likeBtn"].tap()
-        
-        sleep(2)
+        sleep(5)
         
         cellToLike.tap()
         
-        sleep(2)
+        sleep(10)
         
         let image = app.scrollViews.images.element(boundBy: 0)
         
