@@ -27,11 +27,21 @@ final class AuthViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == sequeId,
-           let vc = segue.destination as? WebViewViewController {
-            vc.navigationDelegate = self
+        if segue.identifier == sequeId {
+            guard let webViewViewController = segue.destination as? WebViewViewController
+            else {
+                fatalError("Failed to prepare for \(sequeId)")
+            }
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
+            webViewViewController.navigationDelegate = self
+        } else {
+            super.prepare(for: segue, sender: sender)
         }
     }
+    
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
